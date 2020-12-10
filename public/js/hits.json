@@ -1,0 +1,27 @@
+[
+    {
+        "id": 0,
+        "hit": {
+            "file": "",
+            "title": ""
+        },
+
+        "author": {
+            "name": "",
+            "photo": ""
+        }
+    },
+
+    {
+        "id": 1,
+        "hit": {
+            "file": "",
+            "title": ""
+        },
+
+        "author": {
+            "name": "",
+            "photo": ""
+        }
+    }
+]

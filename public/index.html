@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>hitsmz</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel = "icon" type = "image/png" href = "assets/img/logo.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+	<link rel="stylesheet" type="text/css" href="css/index.css">	
+</head>
+<body>
+	<header>
+		<div id="logo-nav">
+			<a id="logo" href="index.html"></a>
+		
+			<div id="user">
+				<i class="fa fa-user"></i>
+			</div>
+
+			<input	type="search" placeholder="Pesquisar música ou cantor">
+		</div>
+	</header>
+
+	<main>
+		<aside id="left">
+			<form action="" id="form-subscribe">
+				<input type="email" placeholder="Receba novidades no seu email">
+				<span>&star; Cancele a qualquer momento</span>
+			</form>
+
+			<div id="social">
+				<a href="#"><i class="fab fa-facebook"></i></a>
+				<a href="#"><i class="fab fa-whatsapp"></i></a>
+				<a href="#"><i class="fab fa-twitter"></i></a>
+				<a href="+258872081978"><i class="fa fa-phone"></i></a>
+			</div>
+			
+		</aside>
+		
+		<section>
+			<div id="nav-wrap">
+				<span><i class="fa fa-angle-left"></i></span>
+				<nav>
+					<a href="index.html">Home</a>
+					<a href="#">Marabenta</a>
+					<a href="#">Rap</a>
+					<a href="#">Kizomba</a>
+					<a href="#">Pandza</a>
+				</nav>
+				<span><i class="fa fa-angle-right"></i></span>
+			</div>
+
+			<div id="items"></div>
+
+			<button><i class="fa fa-angle-down"></i>Mais hits</button>
+		</section>
+
+		<aside id="right">
+			<h1>Outras categorias</h1>
+			
+			<ul>
+				<li>Mais baixadas</li>
+				<li>Populares</li>
+				<li>Novos hits</li>
+			</ul>
+
+			<select name="" id="">
+				<option value="">Populares</option>
+				<option value="">Mais baixadas</option>
+				<option value="">Novas</option>
+			</select>
+		</aside>
+	</main>
+
+	<footer>
+		<div>&copy; hitsmz<div>
+	</footer>
+
+	<script src="js/Data.js"></script>
+	<script src="js/_libs/jquery-3.5.1.min.js"></script>
+	<script>
+		class Hit {
+			constructor(d) {
+				this.id = d.id;
+				this.song = new Audio(`assets/sounds/hits/${d.id}.mp3`);
+				this.song.volume = 0.3;
+				this.playing = false;
+				this.dur = 0;
+			}
+		}
+
+		let data = new Data().data;
+
+		let hits = [];
+
+		data.forEach(d=> {
+			hits.push(new Hit(d));
+		});
+
+		for(let i=0; i<hits.length; i++) {
+			hits[i].song.onloadedmetadata = ()=> {
+				hits[i].dur = hits[i].song.duration;
+				$(`.item#${i} input`).attr('max', hits[i].dur);
+			}
+		}
+
+		
+
+		let items = '';
+
+		for (let i = 0; i < data.length; i++) {
+			const id = data[i].id;
+			const photo = data[i].author.photo == "" ? 'rap' : data[i].author.photo;
+
+
+			items += `
+				<div class="item" id="${id}" style="background-image: url();">
+					<h2>${data[i].hit.title} - ${data[i].author.name}</h2>
+					<div class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></div>
+
+					<div class="range"><input type="range" min="0" max="1" value="0" id="${id}"></div>
+
+					<div class="controllers">
+						<a class="btn-download" href="assets/sounds/hits/${id}.mp3" download="${data[i].hit.title} - ${data[i].author.name}"><i class="fa fa-download"></i></a>
+						<span class="btn-play" id="${id}"><i id="${id}" class="fa fa-pause"></i></span> 
+						<span class="btn-stop" id="${id}"><i id="${id}" class="fa fa-stop"></i></span> 
+					</div>
+				</div>
+			`;
+
+			// break;
+
+		}
+
+		$('#items').html(items);
+
+		$(document).on('click', '.btn-play', (e)=> {
+			const id = e.target.id;
+			
+			// hits.forEach(h=> {
+			// 	h.song.pause();
+			// 	h.song.currentTime = 0;
+			// 	h.playing = false;
+			// });
+
+			for (let i = 0; i < hits.length; i++) {
+
+				if(id == hits[i].id) {
+	
+					if(!hits[i].playing) {
+						hits[i].song.play();
+						hits[i].playing = true;
+					} else {
+						hits[i].song.pause();
+						hits[i].playing = false;
+					}
+
+					break;
+				}
+			}
+
+		});
+
+		$(document).on('click', '.btn-stop', (e)=> {
+			const id = e.target.id;
+
+			for (let i = 0; i < hits.length; i++) {
+
+				if(id == hits[i].id) {
+					hits[i].song.pause();
+					hits[i].song.currentTime = 0;
+					hits[i].playing = false;
+					break;
+				}
+			}
+
+		});
+
+		hits.forEach(h=> {
+			h.song.ontimeupdate = ()=> {
+				$(`div#${h.id} input`).val(h.song.currentTime);
+			}
+		});
+
+		
+		$('input').change((e)=> {
+			const id = e.target.id;
+			const val = e.target.value;
+			hits[id].song.currentTime = val;
+		});
+
+	</script>
+</body>
+</html>

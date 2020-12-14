@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>hitsmz - Portal de hits de Moz</title>
+	<title>hitsmz</title>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel = "icon" type = "image/png" href = "assets/img/logo.png">
-	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" /> -->
 	<link rel="stylesheet" href="css/_libs/all.css">
-	<link rel="stylesheet" type="text/css" href="css/index.css">	
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" /> -->
+	<link rel="stylesheet" type="text/css" href="css/search.css">	
 </head>
 <body>
 	<header>
@@ -20,7 +20,7 @@
 			</div>
 		
 			<form id="form-search">
-				<input id="search"	type="search" placeholder="Pesquisar música ou cantor" autocomplete="false">
+				<input id="search"	type="search" placeholder="Pesquisar música ou cantor">
 			</form>
 		</div>
 	</header>
@@ -33,16 +33,15 @@
 			</form>
 
 			<div id="social">
-				<a href="#"><i style="color:#3b5999" class="fab fa-facebook"></i></a>
-				<a href="#"><i style="color:#25D366" class="fab fa-whatsapp"></i></a>
-				<a href="#"><i style="color:#55acee" class="fab fa-twitter"></i></a>
+				<a href="#"><i class="fab fa-facebook"></i></a>
+				<a href="#"><i class="fab fa-whatsapp"></i></a>
+				<a href="#"><i class="fab fa-twitter"></i></a>
 				<a href="+258872081978"><i class="fa fa-phone"></i></a>
 			</div>
 			
 		</aside>
 		
 		<section>
-
 			<div id="nav-wrap">
 				<span><i class="fa fa-angle-left"></i></span>
 				<nav>
@@ -55,10 +54,11 @@
 				<span><i class="fa fa-angle-right"></i></span>
 			</div>
 
+			<h1 id="results-label"></h1>
 
 			<div id="items"></div>
 
-			<button><i class="fa fa-angle-down"></i>Mais hits</button>
+			<!-- <button><i class="fa fa-angle-down"></i>Mais hits</button> -->
 		</section>
 
 		<aside id="right">
@@ -98,16 +98,28 @@
 			}
 		}
 
-		let data = new Data().data;
+		let data = [];
 
 		let hits = [];
+
+		const url = new URL(window.location.href);
+		const tag = url.searchParams.get('tag'); 
+
+		makeSearch(tag);
 
 		data.forEach(d=> {
 			hits.push(new Hit(d));
 		});
 
+		for(let i=0; i<hits.length; i++) {
+			hits[i].song.onloadedmetadata = ()=> {
+				hits[i].dur = hits[i].song.duration;
+				$(`.item#${i} input`).attr('max', hits[i].dur);
+			}
+		}
+
 		
-		const putHits = ()=> {
+		function putHits() {
 			let items = '';
 			
 			for (let i = 0; i < hits.length; i++) {
@@ -115,16 +127,16 @@
 				const photo = hits[i].photo == "" ? 'rap' : hits[i].photo;
 				const title = hits[i].title;
 				const name = hits[i].name;
+				console.log(name)
 
 				items += `
 					<div class="item" id="${id}" style="background-image: url();">
 						<h2>${title} - ${name}</h2>
-						
 						<div class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></div>
 
 						<div class="controllers">
 							<!--<a class="btn-download" href="assets/sounds/hits/${id}.mp3" download="${title} - ${name}"><i class="fa fa-download"></i></a>-->
-							<a class="btn-play" id="${id}" href="assets/sounds/hits/${id}.mp3" target="_blank"><i id="${id}" class="fa fa-pause"></i></a> 
+							<a class="btn-play" id="${id}" href="assets/sounds/hits/${id}.mp3"><i id="${id}" target="_blank" class="fa fa-pause"></i></a> 
 							<!-- <a class="btn-share" id="${id}"><i id="${id}" class="fa fa-share" href="#"></i></a> -->
 						</div>
 					</div>
@@ -134,13 +146,45 @@
 			$('#items').html(items);
 		}
 
-		putHits();
+		let results = [];
 
 		$('#form-search').submit((e)=> {
 			e.preventDefault();
 			const txt = $('#search').val();
 			window.location.href = 'search.html?tag='+txt;
 		});
+
+		function makeSearch(txt) {
+			let results = [];
+			const d = new Data().data;
+
+			if(txt.length >= 0) {
+				
+				for(let i=0; i<d.length; i++) {
+					if(
+						d[i].hit.title.toLowerCase().includes(txt.toLowerCase()) ||
+						d[i].author.name.toLowerCase().includes(txt.toLowerCase()) ||
+						d[i].author.others.includes(txt.toLowerCase())
+					) {
+						results.push(d[i]);
+					}
+				}
+			}
+
+			if(results.length != 0) {
+				data = results;
+
+				hits = [];
+				
+				data.forEach(d=> {
+					hits.push(new Hit(d));
+				});
+
+				$('#results-label').html(`Resultado de pesquisa para: <strong>${tag}</strong>`);
+
+				putHits();
+			}
+		}
 	</script>
 </body>
 </html>

@@ -21,8 +21,8 @@
 	<link rel="stylesheet" href="css/_libs/all.css">
 	<link rel="stylesheet" href="css/main.css">
 	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" /> -->
-	<link rel="stylesheet" href="css/common.css">	
-	<link rel="stylesheet" type="text/css" href="css/search.css">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" type="text/css" href="css/singer.css">	
 	<title>Hitsmz - Pesquisa</title>
 </head>
 <body>
@@ -103,8 +103,7 @@
 	<script src="js/Data.js"></script>
 	<script src="js/Hit.js"></script>
 	<script src="js/common.js"></script>
-	<script>
-
+	<script>	
 		let data = [];
 
 		let hits = [];
@@ -127,25 +126,15 @@
 				const title = hits[i].title;
 				const name = hits[i].name;
 				const file = hits[i].file;
-				const others = hits[i].others;
-
-				let singers = '';
-
-				if(others.length > 0) {
-					others.forEach(o=> {
-						singers += `<a href="singer.html?tag=${o}">${o}</a>`; 
-					});
-				}
 
 				items += `
 					<div class="item" id="${id}">
 						<h2>${title} - ${name}</h2>
-						<div class="others-singers">${singers}</div>
-						<a href="singer.html?tag=${name}" class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></a>
+						<div class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></div>
 
 						<div class="controllers">
 							<!--<a class="btn-download" href="assets/sounds/hits/${id}.mp3" download="${title} - ${name}"><i class="fa fa-download"></i></a>-->
-							<a class="btn-play" id="${id}" href="${file}"><i id="${id}" target="_blank" class="fa fa-pause"></i></a> 
+							<a class="btn-play" id="${id}" href="${file}" target="_blank"><i id="${id}" class="fa fa-pause"></i></a> 
 							<!-- <a class="btn-share" id="${id}"><i id="${id}" class="fa fa-share" href="#"></i></a> -->
 						</div>
 					</div>
@@ -164,11 +153,7 @@
 			if(txt.length >= 0) {
 				
 				for(let i=0; i<d.length; i++) {
-					if(
-						d[i].hit.title.toLowerCase().includes(txt.toLowerCase()) ||
-						d[i].author.name.toLowerCase().includes(txt.toLowerCase()) ||
-						d[i].author.others.includes(txt.toLowerCase())
-					) {
+					if(d[i].author.name.toLowerCase().includes(txt.toLowerCase())) {
 						results.push(d[i]);
 					}
 				}
@@ -183,11 +168,11 @@
 					hits.push(new Hit(d));
 				});
 
-				$('#results-label').html(`Resultado de pesquisa para: <strong>${tag}</strong>`);
+				$('#results-label').html(`Discografia de ${tag}`);
 
 				putHits();
 			} else {
-				$('#results-label').html(`Nenhum resultado de pesquisa para: <strong>${tag}</strong>`);
+				$('#results-label').html(`Nenhuma música na discografia de ${tag}`);
 			}
 		}
 	</script>

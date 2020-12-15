@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>hitsmz - Portal de hits de Moz</title>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-6GEB3DK6BS"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+		function gtag()	{
+			dataLayer.push(arguments);
+		}
+
+		gtag('js', new Date());
+		gtag('config', 'G-6GEB3DK6BS');
+	</script>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel = "icon" type = "image/png" href = "assets/img/logo.png">
 	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" /> -->
 	<link rel="stylesheet" href="css/_libs/all.css">
-	<link rel="stylesheet" type="text/css" href="css/index.css">	
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/common.css">	
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<title>Hitsmz - Portal de hits de Moz</title>
 </head>
 <body>
 	<header>
@@ -47,10 +60,10 @@
 				<span><i class="fa fa-angle-left"></i></span>
 				<nav>
 					<a href="index.html">Home</a>
-					<a href="#">Marabenta</a>
-					<a href="#">Rap</a>
-					<a href="#">Kizomba</a>
-					<a href="#">Pandza</a>
+					<a href="category.html?tag=Marabenta">Marabenta</a>
+					<a href="category.html?tag=Rap">Rap</a>
+					<a href="category.html?tag=Kizomba">Kizomba</a>
+					<a href="category.html?tag=Pandza">Pandza</a>
 				</nav>
 				<span><i class="fa fa-angle-right"></i></span>
 			</div>
@@ -63,84 +76,26 @@
 
 		<aside id="right">
 			<h1>Outras categorias</h1>
-			
-			<ul>
-				<li>Mais baixadas</li>
-				<li>Populares</li>
-				<li>Novos hits</li>
-			</ul>
 
-			<select name="" id="">
-				<option value="">Populares</option>
-				<option value="">Mais baixadas</option>
-				<option value="">Novas</option>
+			<select id="other-categories">
+				<option></option>
+				<option>Populares</option>
+				<option>Novas</option>
 			</select>
 		</aside>
 	</main>
+
+	<div id="btn-comment"><i class="fa fa-arrow-up"></i></div>
 
 	<footer>
 		<div>&copy; hitsmz<div>
 	</footer>
 
-	<script src="js/Data.js"></script>
 	<script src="js/_libs/jquery-3.5.1.min.js"></script>
-	<script>
-		class Hit {
-			constructor(d) {
-				this.id = d.id;
-				this.song = new Audio(`assets/sounds/hits/${d.id}.mp3`);
-				this.song.volume = 0.3;
-				this.playing = false;
-				this.dur = 0;
-				this.photo = d.author.photo;
-				this.name = d.author.name;
-				this.title = d.hit.title;
-			}
-		}
-
-		let data = new Data().data;
-
-		let hits = [];
-
-		data.forEach(d=> {
-			hits.push(new Hit(d));
-		});
-
-		
-		const putHits = ()=> {
-			let items = '';
-			
-			for (let i = 0; i < hits.length; i++) {
-				const id = hits[i].id;
-				const photo = hits[i].photo == "" ? 'rap' : hits[i].photo;
-				const title = hits[i].title;
-				const name = hits[i].name;
-
-				items += `
-					<div class="item" id="${id}" style="background-image: url();">
-						<h2>${title} - ${name}</h2>
-						
-						<div class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></div>
-
-						<div class="controllers">
-							<!--<a class="btn-download" href="assets/sounds/hits/${id}.mp3" download="${title} - ${name}"><i class="fa fa-download"></i></a>-->
-							<a class="btn-play" id="${id}" href="assets/sounds/hits/${id}.mp3" target="_blank"><i id="${id}" class="fa fa-pause"></i></a> 
-							<!-- <a class="btn-share" id="${id}"><i id="${id}" class="fa fa-share" href="#"></i></a> -->
-						</div>
-					</div>
-				`;
-			}
-
-			$('#items').html(items);
-		}
-
-		putHits();
-
-		$('#form-search').submit((e)=> {
-			e.preventDefault();
-			const txt = $('#search').val();
-			window.location.href = 'search.html?tag='+txt;
-		});
-	</script>
+	<script src="js/Data.js"></script>
+	<script src="js/Hit.js"></script>
+	<script src="js/index.js"></script>
+	<script src="js/common.js"></script>
+	scr
 </body>
 </html>

@@ -21,8 +21,8 @@
 	<link rel="stylesheet" href="css/_libs/all.css">
 	<link rel="stylesheet" href="css/main.css">
 	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" /> -->
-	<link rel="stylesheet" href="css/common.css">	
-	<link rel="stylesheet" type="text/css" href="css/search.css">
+	<link rel="stylesheet" type="text/css" href="css/categories.css">	
+	<link rel="stylesheet" href="css/common.css">
 	<title>Hitsmz - Pesquisa</title>
 </head>
 <body>
@@ -127,20 +127,10 @@
 				const title = hits[i].title;
 				const name = hits[i].name;
 				const file = hits[i].file;
-				const others = hits[i].others;
-
-				let singers = '';
-
-				if(others.length > 0) {
-					others.forEach(o=> {
-						singers += `<a href="singer.html?tag=${o}">${o}</a>`; 
-					});
-				}
 
 				items += `
 					<div class="item" id="${id}">
 						<h2>${title} - ${name}</h2>
-						<div class="others-singers">${singers}</div>
 						<a href="singer.html?tag=${name}" class="cover" style="background-image: url(assets/img/photos/${photo}.png)"></a>
 
 						<div class="controllers">
@@ -157,6 +147,12 @@
 
 		let results = [];
 
+		$('#form-search').submit((e)=> {
+			e.preventDefault();
+			const txt = $('#search').val();
+			window.location.href = 'search.html?tag='+txt;
+		});
+
 		function makeSearch(txt) {
 			let results = [];
 			const d = new Data().data;
@@ -164,11 +160,7 @@
 			if(txt.length >= 0) {
 				
 				for(let i=0; i<d.length; i++) {
-					if(
-						d[i].hit.title.toLowerCase().includes(txt.toLowerCase()) ||
-						d[i].author.name.toLowerCase().includes(txt.toLowerCase()) ||
-						d[i].author.others.includes(txt.toLowerCase())
-					) {
+					if(d[i].otherCategories.includes(txt.toLowerCase())) {
 						results.push(d[i]);
 					}
 				}
@@ -183,11 +175,9 @@
 					hits.push(new Hit(d));
 				});
 
-				$('#results-label').html(`Resultado de pesquisa para: <strong>${tag}</strong>`);
+				$('#results-label').html(`Músicas ${tag}`);
 
 				putHits();
-			} else {
-				$('#results-label').html(`Nenhum resultado de pesquisa para: <strong>${tag}</strong>`);
 			}
 		}
 	</script>

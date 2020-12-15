@@ -1,0 +1,20 @@
+@font-face {
+    src: url(../assets/fonts/RobotoMono-VariableFont_wght.ttf);
+    font-family: rbt;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #fafafa;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: rbt;
+}
+
+a {
+	text-decoration: none;
+	color: none;
+}

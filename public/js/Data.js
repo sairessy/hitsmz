@@ -196,6 +196,22 @@ class Data {
                     },
                     "category": [""],
                     "otherCategories": ["populares"]
+                },
+
+                {
+                    "id": 11,
+                    "hit": {
+                        "file": "",
+                        "title": "Story of my life"
+                    },
+    
+                    "author": {
+                        "name": "Mr bow",
+                        "others": [],
+                        "photo": "mr_bow"
+                    },
+                    "category": [""],
+                    "otherCategories": ["populares"]
                 }
             ]
         );
